@@ -149,6 +149,8 @@ Secrets are never logged; vault file paths are — review logs before sharing.
 
 ## Development
 
+Requires **Node.js 24.x** (see `.nvmrc` and [CONTRIBUTING.md](CONTRIBUTING.md)).
+
 ```sh
 npm install
 npm run build   # typecheck + production bundle

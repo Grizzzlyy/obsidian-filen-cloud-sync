@@ -17,6 +17,9 @@
   "author": "Real-Fruit-Snacks",
   "license": "MIT",
   "type": "commonjs",
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "@types/node": "^22",
     "esbuild": "^0.28.2",

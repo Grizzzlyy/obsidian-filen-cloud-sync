@@ -5,6 +5,10 @@ rules that keep the plugin working everywhere, and the release process.
 
 ## Setup
 
+**Node.js 24.x** — matches CI (`.github/workflows/ci.yml`) and `.nvmrc`.
+Use [nvm](https://github.com/nvm-sh/nvm) (`nvm install`) or install 24 LTS
+from [nodejs.org](https://nodejs.org/) before `npm install`.
+
 ```sh
 git clone <repo-url> filen-cloud-sync
 cd filen-cloud-sync
