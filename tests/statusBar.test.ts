@@ -86,6 +86,7 @@ describe("nextAutoSyncText (v0.8.1 feature 8)", () => {
 	it("hidden when disconnected, paused, or interval sync is off", () => {
 		expect(nextAutoSyncText({ ...base, connected: false })).toBeNull();
 		expect(nextAutoSyncText({ ...base, paused: true })).toBeNull();
+		expect(nextAutoSyncText({ ...base, offline: true })).toBeNull();
 		expect(nextAutoSyncText({ ...base, autoSyncInterval: false })).toBeNull();
 		expect(nextAutoSyncText({ ...base, syncIntervalMinutes: 0 })).toBeNull();
 	});

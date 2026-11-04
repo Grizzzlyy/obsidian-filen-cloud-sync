@@ -38,6 +38,7 @@ import { UnlockModal } from "./ui/unlock";
 import { VersionHistoryModal } from "./ui/versions";
 import {
 	backgroundChangeNotice,
+	browserReportsOnline,
 	friendlyError,
 	isNetworkError,
 	nextAutoSyncText,
@@ -117,6 +118,16 @@ export default class FilenSyncPlugin extends Plugin {
 		this.explorerDecorations.start();
 
 		this.addSettingTab(new FilenSyncSettingTab(this.app, this));
+
+		// VPN / sleep: browser "online" fires when the route is back — retry auto
+		// sync instead of staying latched offline until a manual run.
+		this.registerDomEvent(window, "online", () => {
+			if (!this.offlineTracker.isOffline()) return;
+			this.updateStatusBar(this.statusBarState);
+			if (!this.settings.syncPaused && (this.hasCredentials() || this.isLocked())) {
+				void this.runSync({ manual: false });
+			}
+		});
 
 		// v0.4.0 feature F: status dashboard (right sidebar).
 		this.registerView(
@@ -464,6 +475,7 @@ export default class FilenSyncPlugin extends Plugin {
 			getNextAutoSync: () => nextAutoSyncText({
 				connected: this.hasCredentials(),
 				paused: this.settings.syncPaused,
+				offline: this.offlineTracker.isOffline(),
 				autoSyncInterval: this.settings.autoSyncInterval,
 				syncIntervalMinutes: this.settings.syncIntervalMinutes,
 				lastSyncFinishedAt: this.lastSyncFinishedAt,
@@ -659,7 +671,10 @@ export default class FilenSyncPlugin extends Plugin {
 		if (typeof navigator !== "undefined" && navigator.onLine === false) {
 			this.offlineTracker.noteNavigatorOffline();
 		}
-		if (this.offlineTracker.isOffline() && !options.manual) return;
+		// While latched offline, auto triggers used to skip forever even when
+		// navigator.onLine was true again (common after VPN ERR_NETWORK_CHANGED).
+		// Only skip when the browser still reports offline; otherwise probe Filen.
+		if (this.offlineTracker.isOffline() && !options.manual && !browserReportsOnline()) return;
 		if (this.offlineTracker.isOffline()) {
 			new Notice("Filen Cloud Sync: you're offline — sync resumes when you're back");
 		}

@@ -796,6 +796,11 @@ export function isNetworkError(raw: string): boolean {
 		|| msg.includes("timed out") || msg.includes("econn") || msg.includes("socket") || msg.includes("dns");
 }
 
+/** Obsidian/Electron: when false, auto sync should not hammer the network. */
+export function browserReportsOnline(): boolean {
+	return typeof navigator === "undefined" || navigator.onLine !== false;
+}
+
 /** v0.8.1: consecutive network-failed runs before the plugin goes "offline". */
 export const OFFLINE_AFTER_NETWORK_FAILURES = 2;
 
@@ -878,12 +883,13 @@ export class NoticeThrottle {
 export function nextAutoSyncText(opts: {
 	connected: boolean;
 	paused: boolean;
+	offline?: boolean;
 	autoSyncInterval: boolean;
 	syncIntervalMinutes: number;
 	lastSyncFinishedAt: number | null;
 	now?: number;
 }): string | null {
-	if (!opts.connected || opts.paused || !opts.autoSyncInterval || opts.syncIntervalMinutes < 1) {
+	if (!opts.connected || opts.paused || opts.offline || !opts.autoSyncInterval || opts.syncIntervalMinutes < 1) {
 		return null;
 	}
 	if (opts.lastSyncFinishedAt === null) return "Next auto sync on the next interval";

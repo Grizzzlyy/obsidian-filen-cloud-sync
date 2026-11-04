@@ -32,6 +32,10 @@ describe("isNetworkError (v0.8.1)", () => {
 		expect(isNetworkError("decrypt failed")).toBe(false);
 		expect(isNetworkError("mass-change guard aborted")).toBe(false);
 	});
+
+	it("treats Chromium VPN route changes as network-class (offline streak)", () => {
+		expect(isNetworkError("net::ERR_NETWORK_CHANGED")).toBe(true);
+	});
 });
 
 describe("OfflineTracker (v0.8.1 feature 2)", () => {
