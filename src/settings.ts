@@ -694,23 +694,21 @@ export class FilenSyncSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		// v0.8.1: About block — version read from the manifest at RUNTIME
-		// (never hardcoded), links to the repo + issue tracker.
+		// About block — author + version from manifest at runtime; repo URL
+		// follows Obsidian convention (authorUrl = GitHub profile).
+		const { author, authorUrl, version } = this.plugin.manifest;
+		const profileUrl =
+			authorUrl ?? `https://github.com/${author}`;
+		const repoUrl = `${profileUrl.replace(/\/$/, "")}/obsidian-filen-cloud-sync`;
 		const about = containerEl.createDiv({ cls: "filen-cloud-sync-about" });
-		about.appendText(`Filen Cloud Sync ${this.plugin.manifest.version} · by `);
-		about.createEl("a", {
-			text: "Real-Fruit-Snacks",
-			href: "https://github.com/Real-Fruit-Snacks",
-		});
+		about.appendText(`Filen Cloud Sync ${version} · by `);
+		about.createEl("a", { text: author, href: profileUrl });
 		about.appendText(" · ");
-		about.createEl("a", {
-			text: "GitHub",
-			href: "https://github.com/Real-Fruit-Snacks/obsidian-filen-cloud-sync",
-		});
+		about.createEl("a", { text: "GitHub", href: repoUrl });
 		about.appendText(" · ");
 		about.createEl("a", {
 			text: "Report an issue",
-			href: "https://github.com/Real-Fruit-Snacks/obsidian-filen-cloud-sync/issues",
+			href: `${repoUrl}/issues`,
 		});
 	}
 

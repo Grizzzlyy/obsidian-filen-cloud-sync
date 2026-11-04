@@ -2,8 +2,8 @@
 
 ![Filen Cloud Sync cover](docs/images/cover.png)
 
-![CI](https://github.com/Real-Fruit-Snacks/obsidian-filen-cloud-sync/actions/workflows/ci.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/Real-Fruit-Snacks/obsidian-filen-cloud-sync)
+![CI](https://github.com/Grizzzlyy/obsidian-filen-cloud-sync/actions/workflows/ci.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/Grizzzlyy/obsidian-filen-cloud-sync)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
 Two-way sync between your Obsidian vault and [Filen](https://filen.io), a
@@ -82,8 +82,9 @@ The full guide — every option, every caveat, every edge case — lives in
 ### BRAT (beta installs)
 
 1. Install the **BRAT** plugin from the community directory.
-2. Run "BRAT: Add a beta plugin for testing" and paste this repository's
-   GitHub path. BRAT keeps the plugin updated automatically.
+2. Run "BRAT: Add a beta plugin for testing" and paste
+   `Grizzzlyy/obsidian-filen-cloud-sync`. BRAT keeps the plugin updated
+   automatically.
 
 ### Manual
 

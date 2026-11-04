@@ -4,7 +4,7 @@
 	"version": "0.8.1",
 	"minAppVersion": "1.13.0",
 	"description": "Two-way sync between your vault and Filen, a zero-knowledge end-to-end encrypted cloud storage. Works on desktop and mobile.",
-	"author": "Real-Fruit-Snacks",
+	"author": "Grizzzlyy",
 	"isDesktopOnly": false,
-	"authorUrl": "https://github.com/Real-Fruit-Snacks"
+	"authorUrl": "https://github.com/Grizzzlyy"
 }

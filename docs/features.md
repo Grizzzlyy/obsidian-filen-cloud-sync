@@ -432,9 +432,9 @@ presentation-only.
 ## About block
 
 The bottom of the settings tab shows a subtle "Filen Cloud Sync
-*<version>* · by Real-Fruit-Snacks · GitHub · Report an issue" line. The
-version is read from the plugin manifest at runtime (never hardcoded), and
-the links go to the repository and its issue tracker.
+*<version>* · by *<author>* · GitHub · Report an issue" line. The version and
+author come from the plugin manifest at runtime (never hardcoded), and the
+links go to the maintainer profile, repository, and issue tracker.
 
 ## Troubleshooting
 
