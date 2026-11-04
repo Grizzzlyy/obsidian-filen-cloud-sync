@@ -72,8 +72,6 @@ export default class FilenSyncPlugin extends Plugin {
 	private readonly offlineTracker = new OfflineTracker();
 	/** v0.8.1 feature 3: identical background notices at most once per 15 min. */
 	private readonly noticeThrottle = new NoticeThrottle();
-	/** Pause/resume log lines: same 15-minute window, so a flapping link cannot fill the log. */
-	private readonly offlineLogThrottle = new NoticeThrottle();
 
 	async onload(): Promise<void> {
 		this.settings = Object.assign(
@@ -654,7 +652,7 @@ export default class FilenSyncPlugin extends Plugin {
 		const wasOffline = this.offlineTracker.isOffline();
 		apply();
 		const message = offlineTransitionMessage(wasOffline, this.offlineTracker.isOffline(), reason);
-		if (!message || !this.offlineLogThrottle.shouldShow(message)) return;
+		if (!message) return;
 		this.syncLog.warn(message);
 		this.syncLog.persist();
 	}
@@ -688,7 +686,7 @@ export default class FilenSyncPlugin extends Plugin {
 		// run start marks offline immediately (2 consecutive network-failed
 		// runs also get here — see OfflineTracker). While the browser still
 		// reports offline, AUTO triggers skip with no per-tick log line.
-		// Entering and leaving offline each write one warning (throttled).
+		// Entering and leaving offline each write one warning.
 		// MANUAL runs show ONE notice and still proceed, because a successful
 		// run is the way back online.
 		if (typeof navigator !== "undefined" && navigator.onLine === false) {
