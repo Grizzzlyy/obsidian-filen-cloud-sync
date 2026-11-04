@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.2] — 2026-11-04
+
+### Fixed
+- **Automatic sync after offline latch** — when the plugin had marked itself
+  offline but the browser reports online again, automatic sync retries instead
+  of staying silent until a manual run. The `window` `online` event triggers a
+  retry after reconnect (e.g. VPN). The dashboard hides "Next auto sync in ~N
+  min" while offline.
+- **Offline transition logging** — entering and leaving offline each produce a
+  clear warning in the sync log; skipped automatic ticks stay quiet.
+
+### Changed
+- **Maintainer** — author metadata and repository links point to Grizzzlyy
+  (see commit history; original author Real-Fruit-Snacks).
+
 ## [0.8.1] — 2026-09-05
 
 ### Added
