@@ -44,7 +44,9 @@ import {
 	nextAutoSyncText,
 	normalizeVaultPath,
 	NoticeThrottle,
+	offlineTransitionMessage,
 	OfflineTracker,
+	OfflineTransitionReason,
 	statusBarText,
 } from "./util";
 
@@ -70,6 +72,8 @@ export default class FilenSyncPlugin extends Plugin {
 	private readonly offlineTracker = new OfflineTracker();
 	/** v0.8.1 feature 3: identical background notices at most once per 15 min. */
 	private readonly noticeThrottle = new NoticeThrottle();
+	/** Pause/resume log lines: same 15-minute window, so a flapping link cannot fill the log. */
+	private readonly offlineLogThrottle = new NoticeThrottle();
 
 	async onload(): Promise<void> {
 		this.settings = Object.assign(
@@ -637,6 +641,24 @@ export default class FilenSyncPlugin extends Plugin {
 		new Notice(text);
 	}
 
+	private recordOfflineNavigator(): void {
+		this.recordOfflineTransition(() => this.offlineTracker.noteNavigatorOffline(), "navigator");
+	}
+
+	private recordOfflineRun(result: { status: string; message: string }): void {
+		this.recordOfflineTransition(() => this.offlineTracker.noteRunFinished(result), "failures");
+	}
+
+	/** One warning on entering or leaving offline. Repeated skips stay silent. */
+	private recordOfflineTransition(apply: () => void, reason: OfflineTransitionReason): void {
+		const wasOffline = this.offlineTracker.isOffline();
+		apply();
+		const message = offlineTransitionMessage(wasOffline, this.offlineTracker.isOffline(), reason);
+		if (!message || !this.offlineLogThrottle.shouldShow(message)) return;
+		this.syncLog.warn(message);
+		this.syncLog.persist();
+	}
+
 	private async runSync(options: {
 		manual: boolean;
 		ignoreMassChangeGuard?: boolean;
@@ -664,12 +686,13 @@ export default class FilenSyncPlugin extends Plugin {
 		}
 		// v0.8.1 feature 2: offline awareness. navigator.onLine === false at
 		// run start marks offline immediately (2 consecutive network-failed
-		// runs also get here — see OfflineTracker). While offline: AUTO
-		// triggers (interval/save/startup) skip SILENTLY — no engine run, so
-		// no error-log spam; MANUAL runs show ONE notice and still proceed,
-		// because a successful run is the way back online.
+		// runs also get here — see OfflineTracker). While the browser still
+		// reports offline, AUTO triggers skip with no per-tick log line.
+		// Entering and leaving offline each write one warning (throttled).
+		// MANUAL runs show ONE notice and still proceed, because a successful
+		// run is the way back online.
 		if (typeof navigator !== "undefined" && navigator.onLine === false) {
-			this.offlineTracker.noteNavigatorOffline();
+			this.recordOfflineNavigator();
 		}
 		// While latched offline, auto triggers used to skip forever even when
 		// navigator.onLine was true again (common after VPN ERR_NETWORK_CHANGED).
@@ -691,7 +714,7 @@ export default class FilenSyncPlugin extends Plugin {
 			this.updateStatusBar("running");
 			try {
 				const result = await this.engine.run(options);
-				this.offlineTracker.noteRunFinished(result);
+				this.recordOfflineRun(result);
 				this.updateStatusBar(result.status === "error" ? "error" : "idle");
 				if (result.status === "dry-run" && result.plan) {
 					new DryRunModal(
@@ -706,7 +729,7 @@ export default class FilenSyncPlugin extends Plugin {
 			} catch (e) {
 				const message = e instanceof Error ? e.message : String(e);
 				this.syncLog.error(`dry run crashed: ${message}`);
-				this.offlineTracker.noteRunFinished({ status: "error", message });
+				this.recordOfflineRun({ status: "error", message });
 				new Notice(`Filen Cloud Sync failed: ${message}`);
 				this.updateStatusBar("error");
 			}
@@ -732,7 +755,7 @@ export default class FilenSyncPlugin extends Plugin {
 			this.lastSyncFinishedAt = Date.now();
 			// v0.8.1 feature 2: feed the offline state machine (a run that
 			// reached the gateway clears offline; network errors count up).
-			this.offlineTracker.noteRunFinished(result);
+			this.recordOfflineRun(result);
 			if (modal) {
 				const clean = (result.status === "ok" || result.status === "empty")
 					&& (result.opFailures ?? 0) === 0
@@ -778,7 +801,7 @@ export default class FilenSyncPlugin extends Plugin {
 		} catch (e) {
 			const message = e instanceof Error ? e.message : String(e);
 			this.syncLog.error(`sync crashed: ${message}`);
-			this.offlineTracker.noteRunFinished({ status: "error", message });
+			this.recordOfflineRun({ status: "error", message });
 			modal?.finish(`failed: ${message}`, false);
 			if (options.manual || previousStatus !== "error") new Notice(`Filen Cloud Sync failed: ${message}`);
 			this.lastSyncResult = { status: "error", message };

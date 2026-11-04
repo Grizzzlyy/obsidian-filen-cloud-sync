@@ -10,6 +10,7 @@ import {
 	isNetworkError,
 	NoticeThrottle,
 	NOTICE_THROTTLE_WINDOW_MS,
+	offlineTransitionMessage,
 	OfflineTracker,
 	OFFLINE_AFTER_NETWORK_FAILURES,
 } from "../src/util";
@@ -103,6 +104,25 @@ describe("OfflineTracker (v0.8.1 feature 2)", () => {
 		tracker.noteNavigatorOffline();
 		tracker.noteRequestSuccess();
 		expect(tracker.isOffline()).toBe(false);
+	});
+});
+
+describe("offlineTransitionMessage", () => {
+	it("names the browser pause only on the way in", () => {
+		expect(offlineTransitionMessage(false, true, "navigator"))
+			.toBe("automatic sync paused — browser reports offline");
+		expect(offlineTransitionMessage(true, true, "navigator")).toBeNull();
+	});
+
+	it("names the failure pause only on the way in", () => {
+		expect(offlineTransitionMessage(false, true, "failures"))
+			.toBe("automatic sync paused — 2 network failures");
+		expect(offlineTransitionMessage(false, false, "failures")).toBeNull();
+	});
+
+	it("names resume only on the way out", () => {
+		expect(offlineTransitionMessage(true, false, "failures")).toBe("automatic sync resumed");
+		expect(offlineTransitionMessage(true, false, "navigator")).toBe("automatic sync resumed");
 	});
 });
 

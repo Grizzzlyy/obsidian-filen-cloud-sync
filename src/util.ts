@@ -848,6 +848,28 @@ export class OfflineTracker {
 	}
 }
 
+export type OfflineTransitionReason = "navigator" | "failures";
+
+/**
+ * One sync-log line when offline mode is entered or left. Null while the
+ * flag stays put — a 1-minute interval must not fill the 200-entry ring
+ * buffer with identical skip lines. "navigator" is navigator.onLine === false
+ * at run start; "failures" is the consecutive network-error streak.
+ */
+export function offlineTransitionMessage(
+	wasOffline: boolean,
+	nowOffline: boolean,
+	reason: OfflineTransitionReason,
+): string | null {
+	if (wasOffline === nowOffline) return null;
+	if (nowOffline) {
+		return reason === "navigator"
+			? "automatic sync paused — browser reports offline"
+			: "automatic sync paused — 2 network failures";
+	}
+	return "automatic sync resumed";
+}
+
 /** v0.8.1: identical background notices repeat at most once per 15 minutes. */
 export const NOTICE_THROTTLE_WINDOW_MS = 15 * 60 * 1000;
 
