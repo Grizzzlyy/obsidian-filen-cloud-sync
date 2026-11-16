@@ -639,6 +639,7 @@ export class SyncEngine {
 				remoteMtime: result.lastModified,
 				remoteSize: result.size,
 			});
+			this.dropRemoteTreeCache();
 			this.persistState();
 			this.log.persist();
 			this.log.info(`force-synced ${normalized} (${formatBytes(result.size)}) — uploaded to Filen`);
@@ -799,6 +800,11 @@ export class SyncEngine {
 		this.emitProgress(phaseLabel(op.kind), describeOp(op));
 	}
 
+	private dropRemoteTreeCache(): void {
+		if (this.state) this.state.remoteTreeCache = null;
+		this.memoryTreeCache = null;
+	}
+
 	private persistState(): void {
 		if (!this.state) return;
 		mapIntoState(this.state, this.base);
@@ -844,11 +850,13 @@ export class SyncEngine {
 	private async opTrashRemote(op: SyncOp): Promise<void> {
 		if (op.remote) await this.client.fileTrash(op.remote.uuid);
 		this.base.delete(op.path);
+		this.dropRemoteTreeCache();
 		this.log.info(`Deleted ${op.path} on Filen (moved to trash)`);
 	}
 
 	private async opMkdirRemote(op: SyncOp): Promise<void> {
 		await this.ensureRemoteFolder(op.path);
+		this.dropRemoteTreeCache();
 		this.log.info(`Created folder ${op.path} on Filen`);
 	}
 
@@ -914,6 +922,7 @@ export class SyncEngine {
 			remoteMtime: record?.remoteMtime ?? op.rename.metadata.lastModified,
 			remoteSize: record?.remoteSize ?? op.rename.metadata.size,
 		});
+		this.dropRemoteTreeCache();
 		this.log.info(`Renamed ${op.path} to ${op.toPath} on Filen`);
 	}
 
@@ -952,6 +961,7 @@ export class SyncEngine {
 			remoteMtime: result.lastModified,
 			remoteSize: result.size,
 		});
+		this.dropRemoteTreeCache();
 		this.log.info(`Uploaded ${op.path} (${formatBytes(result.size)}, ${pluralize(result.chunks, "chunk")})`);
 		// keep_newer conflict: trash the remote loser only AFTER the winner landed.
 		if (op.trashRemoteUuidAfter) {
@@ -1046,6 +1056,7 @@ export class SyncEngine {
 		if (uuid) {
 			await this.client.dirTrash(uuid);
 			this.remoteFolderCache.delete(op.path);
+			this.dropRemoteTreeCache();
 		}
 		this.log.info(`Deleted folder ${op.path} on Filen (moved to trash)`);
 	}

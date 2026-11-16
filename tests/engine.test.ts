@@ -672,6 +672,31 @@ describe("events-based fast polling", () => {
 		saveState(app, state);
 	};
 
+	it("an upload drops the cache so a later quiet poll cannot restore the previous bytes", async () => {
+		const { engine, vault, app, seedRemote, remoteFiles, eventsControl, settings } = makeEngine();
+		settings.fastRemotePolling = true;
+		eventsControl.setEvents([]);
+		setupSyncedFile(vault, seedRemote, remoteFiles, app);
+
+		const run1 = await engine.run({ manual: true });
+		expect(run1.status).toBe("empty");
+		expect(loadState(app).remoteTreeCache?.files["note.md"]).toBeTruthy();
+		const treesAfterBaseline = eventsControl.dirTreeCalls;
+
+		vault.addFile("note.md", "hello there", T0 + 60_000);
+		const run2 = await engine.run({ manual: false });
+		expect(run2.plan?.counts.uploads).toBe(1);
+		expect(run2.plan?.counts.downloads).toBe(0);
+		expect(vault.textOf("note.md")).toBe("hello there");
+		expect(loadState(app).remoteTreeCache ?? null).toBeNull();
+		expect(eventsControl.dirTreeCalls).toBe(treesAfterBaseline);
+
+		const run3 = await engine.run({ manual: false });
+		expect(run3.plan?.counts.downloads).toBe(0);
+		expect(vault.textOf("note.md")).toBe("hello there");
+		expect(eventsControl.dirTreeCalls).toBe(treesAfterBaseline + 1);
+	});
+
 	it("zero events + fresh cache → cache hit skips dirTree entirely", async () => {
 		const { engine, vault, app, seedRemote, remoteFiles, eventsControl, settings } = makeEngine();
 		settings.fastRemotePolling = true;
@@ -1039,11 +1064,11 @@ describe("v0.4.0 review fixes", () => {
 		const { engine, vault, app, seedRemote, eventsControl, settings } = makeEngine();
 		settings.fastRemotePolling = true;
 		seedRemote("a.md", "aaa", T0);
-		vault.addFile("b.md", "bbb", T0);
+		vault.addFile("a.md", "aaa", T0);
 		eventsControl.failEvents(new Error("boom"));
 		const t0 = Date.now() - 1;
 		const run = await engine.run({ manual: false });
-		expect(run.status).toBe("ok");
+		expect(run.status).toBe("empty");
 		const cache = loadState(app).remoteTreeCache;
 		expect(cache).toBeTruthy();
 		expect(cache?.eventWatermark).toBeGreaterThanOrEqual(t0);
