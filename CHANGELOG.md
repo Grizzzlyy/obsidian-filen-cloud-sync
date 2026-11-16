@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.3] — 2026-11-17
+
+### Fixed
+- **Stale cloud listing after an upload** — a sync saved the cloud file list
+  before uploading, so the list still named the previous Filen file. The next
+  automatic sync that saw no new events reused that list and downloaded the
+  old bytes over the note. The same mismatch could be treated as a conflict
+  and leave a conflict copy. Uploads, renames, and deletes on Filen now drop
+  the saved list, and the next sync fetches the current tree.
+
 ## [0.8.2] — 2026-11-04
 
 ### Fixed
