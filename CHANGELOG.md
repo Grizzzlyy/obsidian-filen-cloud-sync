@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.4] — 2026-11-22
+
+### Changed
+- **Plugin id** — `filen-vault-sync`, so this repo can be submitted to the community directory. The archived listing still owns `filen-cloud-sync`. The display name stays Filen Cloud Sync. Install it into `.obsidian/plugins/filen-vault-sync/`; an existing copy in the old folder is a different plugin and will not update in place.
+- Setup links (`filen-cloud-sync://setup/…`), the shared preferences file, and on-device credential keys are unchanged.
+
 ## [0.8.3] — 2026-11-17
 
 ### Fixed

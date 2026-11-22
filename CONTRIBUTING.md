@@ -17,7 +17,7 @@ npm run dev        # esbuild watch mode → main.js
 ```
 
 Install into a **test vault** (never your real one) by symlinking or copying
-the repo into `<vault>/.obsidian/plugins/filen-cloud-sync/`, then enable it in
+the repo into `<vault>/.obsidian/plugins/filen-vault-sync/`, then enable it in
 Obsidian. Iterate with `npm run dev` + "Reload app without saving".
 
 ## Before you submit anything

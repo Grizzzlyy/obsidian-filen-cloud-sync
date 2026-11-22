@@ -90,7 +90,7 @@ The full guide — every option, every caveat, every edge case — lives in
 
 1. Download `main.js`, `manifest.json` and `styles.css` from the latest
    release.
-2. Copy them into `<your vault>/.obsidian/plugins/filen-cloud-sync/`.
+2. Copy them into `<your vault>/.obsidian/plugins/filen-vault-sync/`.
 3. Enable Community plugins in Obsidian, then enable **Filen Cloud Sync**.
 
 ## Quickstart

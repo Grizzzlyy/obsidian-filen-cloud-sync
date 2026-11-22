@@ -37,6 +37,9 @@ export interface LocalScanOptions {
 
 const TMP_SUFFIX = ".filen-tmp";
 
+/** Plugin folders that must never sync, including ids this plugin used before. */
+const OWN_PLUGIN_IDS = ["filen-vault-sync", "filen-cloud-sync", "filen-sync"];
+
 /** True when `normalized` (under cfg) is covered by an allowlist entry. */
 export function allowlistAllows(normalized: string, cfg: string, allowlist: string[] | undefined): boolean {
 	const relative = normalized === cfg ? "" : normalized.slice(cfg.length + 1);
@@ -70,10 +73,9 @@ export function shouldExcludePath(
 		if (isWorkspaceFileName(baseNameOf(normalized))) return "workspace files never sync";
 		// HARD guard: our own plugin state (data.json holds per-device
 		// bookkeeping) never syncs, even under the "plugins" preset — the
-		// shared-settings feature is the channel for preferences. Covers the
-		// legacy plugin id too.
-		if (normalized.startsWith(`${cfg}/plugins/filen-cloud-sync`)
-			|| normalized.startsWith(`${cfg}/plugins/filen-sync`)) {
+		// shared-settings feature is the channel for preferences. Covers
+		// previous ids so a leftover install is still never uploaded.
+		if (OWN_PLUGIN_IDS.some(id => normalized.startsWith(`${cfg}/plugins/${id}`))) {
 			return "own plugin state never syncs";
 		}
 		if (!opts.syncConfigDir || !allowlistAllows(normalized, cfg, opts.configSyncAllowlist)) {

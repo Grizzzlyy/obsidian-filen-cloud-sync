@@ -496,7 +496,7 @@ export default class FilenSyncPlugin extends Plugin {
 					setting?: { open(): void; openTabById(id: string): void };
 				}).setting;
 				setting?.open();
-				setting?.openTabById("filen-cloud-sync");
+				setting?.openTabById(this.manifest.id);
 			},
 			onShowLog: () => new SyncLogModal(this.app, this.syncLog, () => this.lastRunSummary()).open(),
 			// v0.8.0 feature 1: conflict cleanup view from the dashboard.

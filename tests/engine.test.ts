@@ -1192,6 +1192,7 @@ describe("v0.6.8 — internal .filen-* files never sync (live wedge bug)", () =>
 		const { engine, vault, app, settings } = makeEngine();
 		settings.syncConfigDir = true;
 		settings.configSyncAllowlist = ["plugins"];
+		vault.addFile(".obsidian/plugins/filen-vault-sync/data.json", "{}", T0);
 		vault.addFile(".obsidian/plugins/filen-cloud-sync/data.json", "{}", T0);
 		vault.addFile(".obsidian/plugins/other-plugin/data.json", "{}", T0);
 		vault.addFile(".obsidian/plugins/filen-sync/data.json", "{}", T0); // legacy id
@@ -1200,6 +1201,7 @@ describe("v0.6.8 — internal .filen-* files never sync (live wedge bug)", () =>
 		saveState(app, state);
 		const run = await engine.run({ manual: true });
 		const paths = (run.plan?.ops ?? []).map(op => op.path);
+		expect(paths.some(p => p.includes("plugins/filen-vault-sync"))).toBe(false);
 		expect(paths.some(p => p.includes("plugins/filen-cloud-sync"))).toBe(false);
 		expect(paths.some(p => p.includes("plugins/filen-sync/"))).toBe(false);
 		expect(paths.some(p => p.includes("plugins/other-plugin"))).toBe(true);
