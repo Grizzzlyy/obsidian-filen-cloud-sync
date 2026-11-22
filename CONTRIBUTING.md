@@ -1,4 +1,4 @@
-# Contributing to Filen Cloud Sync
+# Contributing to Filen Vault Sync
 
 Thanks for helping out. This document covers development setup, the project
 rules that keep the plugin working everywhere, and the release process.

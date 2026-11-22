@@ -1,6 +1,6 @@
-# Filen Cloud Sync
+# Filen Vault Sync
 
-![Filen Cloud Sync cover](docs/images/cover.png)
+![Filen Vault Sync cover](docs/images/cover.png)
 
 ![CI](https://github.com/Grizzzlyy/obsidian-filen-cloud-sync/actions/workflows/ci.yml/badge.svg)
 ![Release](https://img.shields.io/github/v/release/Grizzzlyy/obsidian-filen-cloud-sync)
@@ -91,11 +91,11 @@ The full guide — every option, every caveat, every edge case — lives in
 1. Download `main.js`, `manifest.json` and `styles.css` from the latest
    release.
 2. Copy them into `<your vault>/.obsidian/plugins/filen-vault-sync/`.
-3. Enable Community plugins in Obsidian, then enable **Filen Cloud Sync**.
+3. Enable Community plugins in Obsidian, then enable **Filen Vault Sync**.
 
 ## Quickstart
 
-1. **Settings → Filen Cloud Sync**: enter your Filen email and password
+1. **Settings → Filen Vault Sync**: enter your Filen email and password
    (plus your 2FA code if enabled) and press **Connect & verify**. The
    remote folder is `Obsidian/<vault name>` by default — change it before
    connecting if you want something else.
@@ -143,7 +143,7 @@ to Filen's public API endpoints and nothing else — `gateway.filen.io`
 
 ## Troubleshooting
 
-Enable **Settings → Filen Cloud Sync → Debug log**, reproduce the problem,
+Enable **Settings → Filen Vault Sync → Debug log**, reproduce the problem,
 and read the `[filen-cloud-sync]`-tagged console output (details and
 per-platform console access in [docs/features.md](docs/features.md#troubleshooting)).
 Secrets are never logged; vault file paths are — review logs before sharing.

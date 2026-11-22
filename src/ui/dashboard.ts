@@ -76,7 +76,7 @@ export class FilenSyncDashboardView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "Filen Cloud Sync";
+		return "Filen Vault Sync";
 	}
 
 	getIcon(): string {

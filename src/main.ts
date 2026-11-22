@@ -178,7 +178,7 @@ export default class FilenSyncPlugin extends Plugin {
 					return;
 				}
 				if (!this.isLocked()) {
-					new Notice("Filen Cloud Sync is already unlocked");
+					new Notice("Filen Vault Sync is already unlocked");
 					return;
 				}
 				this.openUnlockModal();
@@ -190,7 +190,7 @@ export default class FilenSyncPlugin extends Plugin {
 			callback: () => {
 				const file = this.app.workspace.getActiveFile();
 				if (!file) {
-					new Notice("Filen Cloud Sync: open a file first");
+					new Notice("Filen Vault Sync: open a file first");
 					return;
 				}
 				void this.openVersionHistory(file);
@@ -204,7 +204,7 @@ export default class FilenSyncPlugin extends Plugin {
 			callback: () => {
 				const file = this.app.workspace.getActiveFile();
 				if (!file) {
-					new Notice("Filen Cloud Sync: open a file first");
+					new Notice("Filen Vault Sync: open a file first");
 					return;
 				}
 				void this.forceSyncFile(file);
@@ -224,7 +224,7 @@ export default class FilenSyncPlugin extends Plugin {
 				clearLog(this.app);
 				clearDeviceId(this.app);
 				this.syncLog.clear();
-				new Notice("Filen Cloud Sync state reset — next sync runs as a fresh seed");
+				new Notice("Filen Vault Sync state reset — next sync runs as a fresh seed");
 			},
 		});
 		this.addCommand({
@@ -246,7 +246,7 @@ export default class FilenSyncPlugin extends Plugin {
 				if (path.length === 0) return;
 				const ignored = this.settings.ignoredFolders.includes(path);
 				menu.addItem(item => item
-					.setTitle(ignored ? "Remove from Filen ignore list" : "Ignore in Filen Cloud Sync")
+					.setTitle(ignored ? "Remove from Filen ignore list" : "Ignore in Filen Vault Sync")
 					.setIcon("cloud-off")
 					.onClick(() => {
 						if (ignored) {
@@ -404,16 +404,16 @@ export default class FilenSyncPlugin extends Plugin {
 				credentials.rootUuid, chain, loadDeviceId(this.app),
 			);
 			this.setMemoryCredentials(credentials);
-			new Notice(`Filen Cloud Sync unlocked as ${this.settings.email}`);
+			new Notice(`Filen Vault Sync unlocked as ${this.settings.email}`);
 			this.onConnected();
 		}).open();
 	}
 
 	private ribbonLabel(): string {
-		if (this.isLocked()) return "Filen Cloud Sync: unlock";
+		if (this.isLocked()) return "Filen Vault Sync: unlock";
 		// v0.7.1 feature B: the tooltip notes the paused state.
-		if (this.settings.syncPaused) return "Filen Cloud Sync: dashboard (syncing paused)";
-		return "Filen Cloud Sync: dashboard";
+		if (this.settings.syncPaused) return "Filen Vault Sync: dashboard (syncing paused)";
+		return "Filen Vault Sync: dashboard";
 	}
 
 	private updateRibbon(): void {
@@ -513,7 +513,7 @@ export default class FilenSyncPlugin extends Plugin {
 	 */
 	private async forceSyncFile(file: TFile): Promise<void> {
 		if (this.isLocked()) {
-			new Notice("Filen Cloud Sync is locked — run the 'Unlock sync' command");
+			new Notice("Filen Vault Sync is locked — run the 'Unlock sync' command");
 			return;
 		}
 		await this.engine.forceUploadFile(
@@ -537,7 +537,7 @@ export default class FilenSyncPlugin extends Plugin {
 	private async openVersionHistory(file: TFile): Promise<void> {
 		const credentials = this.memoryCredentials ?? loadCredentials(this.app);
 		if (!credentials) {
-			new Notice("Filen Cloud Sync: not connected — connect your Filen account in settings");
+			new Notice("Filen Vault Sync: not connected — connect your Filen account in settings");
 			return;
 		}
 		const path = normalizeVaultPath(file.path);
@@ -545,7 +545,7 @@ export default class FilenSyncPlugin extends Plugin {
 		if (!record) {
 			const message = `${path} is not synced yet — sync first`;
 			this.syncLog.warn(`version history: ${message}`);
-			new Notice(`Filen Cloud Sync: ${message}`);
+			new Notice(`Filen Vault Sync: ${message}`);
 			return;
 		}
 		this.client.setCredentials(credentials);
@@ -558,7 +558,7 @@ export default class FilenSyncPlugin extends Plugin {
 		} catch (e) {
 			const message = `could not load versions for ${path}: ${errMsg(e)}`;
 			this.syncLog.error(message);
-			new Notice(`Filen Cloud Sync: ${message}`);
+			new Notice(`Filen Vault Sync: ${message}`);
 		}
 	}
 
@@ -567,7 +567,7 @@ export default class FilenSyncPlugin extends Plugin {
 	private openSelfTest(): void {
 		const credentials = this.memoryCredentials ?? loadCredentials(this.app);
 		if (!credentials) {
-			new Notice("Filen Cloud Sync: not connected — connect your Filen account in settings");
+			new Notice("Filen Vault Sync: not connected — connect your Filen account in settings");
 			return;
 		}
 		this.client.setCredentials(credentials);
@@ -633,7 +633,7 @@ export default class FilenSyncPlugin extends Plugin {
 		// stack a second notice on top of it.
 		if (opts?.manual && this.offlineTracker.isOffline() && isNetworkError(rawMessage)) return;
 		const friendly = friendlyError(rawMessage);
-		const lead = prefix ? `${prefix}: ` : "Filen Cloud Sync: ";
+		const lead = prefix ? `${prefix}: ` : "Filen Vault Sync: ";
 		const text = friendly.hint ? `${lead}${friendly.title} — ${friendly.hint}` : `${lead}${friendly.title}`;
 		if (!opts?.manual && !this.noticeThrottle.shouldShow(text)) return;
 		new Notice(text);
@@ -677,7 +677,7 @@ export default class FilenSyncPlugin extends Plugin {
 			// Locked: one Notice per manual run, and only the first auto run —
 			// no retry spam while locked.
 			if (options.manual || !this.lockedNoticeShown) {
-				new Notice("Filen Cloud Sync is locked — run the 'Unlock sync' command");
+				new Notice("Filen Vault Sync is locked — run the 'Unlock sync' command");
 				this.lockedNoticeShown = true;
 			}
 			return;
@@ -697,11 +697,11 @@ export default class FilenSyncPlugin extends Plugin {
 		// Only skip when the browser still reports offline; otherwise probe Filen.
 		if (this.offlineTracker.isOffline() && !options.manual && !browserReportsOnline()) return;
 		if (this.offlineTracker.isOffline()) {
-			new Notice("Filen Cloud Sync: you're offline — sync resumes when you're back");
+			new Notice("Filen Vault Sync: you're offline — sync resumes when you're back");
 		}
 		if (options.manual && this.engine.isRunning) {
 			// Join the single-flight queue without opening a second (dead) modal.
-			new Notice("Filen Cloud Sync already running — queued");
+			new Notice("Filen Vault Sync already running — queued");
 			void this.engine.run(options);
 			return;
 		}
@@ -722,13 +722,13 @@ export default class FilenSyncPlugin extends Plugin {
 						() => void this.runSync({ manual: true }),
 					).open();
 				} else if (result.status === "error") {
-					this.friendlyNotice(result.message, "Filen Cloud Sync failed", { manual: true });
+					this.friendlyNotice(result.message, "Filen Vault Sync failed", { manual: true });
 				}
 			} catch (e) {
 				const message = e instanceof Error ? e.message : String(e);
 				this.syncLog.error(`dry run crashed: ${message}`);
 				this.recordOfflineRun({ status: "error", message });
-				new Notice(`Filen Cloud Sync failed: ${message}`);
+				new Notice(`Filen Vault Sync failed: ${message}`);
 				this.updateStatusBar("error");
 			}
 			return;
@@ -762,12 +762,12 @@ export default class FilenSyncPlugin extends Plugin {
 					result.message, clean,
 					result.plan?.conflicts.map(conflict => conflict.path) ?? [],
 				);
-				if (result.status === "error") this.friendlyNotice(result.message, "Filen Cloud Sync failed", { manual: true });
-				else if (result.status === "aborted") this.friendlyNotice(result.message, "Filen Cloud Sync aborted", { manual: true });
+				if (result.status === "error") this.friendlyNotice(result.message, "Filen Vault Sync failed", { manual: true });
+				else if (result.status === "aborted") this.friendlyNotice(result.message, "Filen Vault Sync aborted", { manual: true });
 			} else if (result.status === "error") {
 				// Auto runs: surface a Notice only on the ok→error transition
 				// (rate-limited, not every failing run); status bar always updates.
-				if (previousStatus !== "error") this.friendlyNotice(result.message, "Filen Cloud Sync failed");
+				if (previousStatus !== "error") this.friendlyNotice(result.message, "Filen Vault Sync failed");
 			} else if (!options.manual && result.plan) {
 				// v0.8.0 feature 2: opt-in background-change notice — ONE line
 				// composed from the plan counts; empty/error runs stay silent.
@@ -777,7 +777,7 @@ export default class FilenSyncPlugin extends Plugin {
 					status: result.status,
 					counts: result.plan.counts,
 				});
-				if (backgroundMessage) new Notice(`Filen Cloud Sync: ${backgroundMessage}`);
+				if (backgroundMessage) new Notice(`Filen Vault Sync: ${backgroundMessage}`);
 			}
 			this.updateStatusBar(result.status === "error" ? "error" : "idle");
 			// v0.5.0: post-run shared-prefs check on the run's own remote tree
@@ -801,7 +801,7 @@ export default class FilenSyncPlugin extends Plugin {
 			this.syncLog.error(`sync crashed: ${message}`);
 			this.recordOfflineRun({ status: "error", message });
 			modal?.finish(`failed: ${message}`, false);
-			if (options.manual || previousStatus !== "error") new Notice(`Filen Cloud Sync failed: ${message}`);
+			if (options.manual || previousStatus !== "error") new Notice(`Filen Vault Sync failed: ${message}`);
 			this.lastSyncResult = { status: "error", message };
 			this.lastSyncFinishedAt = Date.now();
 			this.updateStatusBar("error");
@@ -821,7 +821,7 @@ export default class FilenSyncPlugin extends Plugin {
 			this.statusBarItem.setText(statusBarText(state, {
 				paused: true, offline, lastSyncFinishedAt: this.lastSyncFinishedAt,
 			}));
-			this.statusBarItem.setAttribute("aria-label", `Filen Cloud Sync: ${SYNC_PAUSED_MESSAGE}`);
+			this.statusBarItem.setAttribute("aria-label", `Filen Vault Sync: ${SYNC_PAUSED_MESSAGE}`);
 			return;
 		}
 		if (state === "running") {
@@ -834,14 +834,14 @@ export default class FilenSyncPlugin extends Plugin {
 			this.statusBarItem.setText(statusBarText(state, {
 				paused: false, offline, lastSyncFinishedAt: this.lastSyncFinishedAt,
 			}));
-			this.statusBarItem.setAttribute("aria-label", `Filen Cloud Sync error${detail}`);
+			this.statusBarItem.setAttribute("aria-label", `Filen Vault Sync error${detail}`);
 		} else {
 			// v0.8.0 feature 4: idle shows the relative last-sync timestamp.
 			this.statusBarItem.setText(statusBarText(state, {
 				paused: false, offline, lastSyncFinishedAt: this.lastSyncFinishedAt,
 			}));
 			if (this.lastSyncResult) {
-				this.statusBarItem.setAttribute("aria-label", `Filen Cloud Sync: ${this.lastSyncResult.message}`);
+				this.statusBarItem.setAttribute("aria-label", `Filen Vault Sync: ${this.lastSyncResult.message}`);
 			}
 		}
 	}

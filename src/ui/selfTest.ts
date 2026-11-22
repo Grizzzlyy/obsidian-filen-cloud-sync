@@ -205,7 +205,7 @@ export class SelfTestModal extends Modal {
 	}
 
 	onOpen(): void {
-		this.setTitle("Filen Cloud Sync self-test");
+		this.setTitle("Filen Vault Sync self-test");
 		const body = this.contentEl.createDiv({ cls: "filen-cloud-sync-selftest" });
 		this.summaryEl = body.createDiv({ cls: "filen-cloud-sync-selftest-summary" });
 		this.summaryEl.setText("Running self-test…");

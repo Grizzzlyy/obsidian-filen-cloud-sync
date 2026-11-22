@@ -566,7 +566,7 @@ export class FilenSyncSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					const parsed = parseSetupUri(importArea?.getValue() ?? "");
 					if (!parsed) {
-						new Notice("That doesn't look like a Filen Cloud Sync setup link");
+						new Notice("That doesn't look like a Filen Vault Sync setup link");
 						return;
 					}
 					// Email only fills a LOCAL blank — never overwrites, and the
@@ -701,7 +701,7 @@ export class FilenSyncSettingTab extends PluginSettingTab {
 			authorUrl ?? `https://github.com/${author}`;
 		const repoUrl = `${profileUrl.replace(/\/$/, "")}/obsidian-filen-cloud-sync`;
 		const about = containerEl.createDiv({ cls: "filen-cloud-sync-about" });
-		about.appendText(`Filen Cloud Sync ${version} · by `);
+		about.appendText(`Filen Vault Sync ${version} · by `);
 		about.createEl("a", { text: author, href: profileUrl });
 		about.appendText(" · ");
 		about.createEl("a", { text: "GitHub", href: repoUrl });

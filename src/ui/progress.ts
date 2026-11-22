@@ -34,7 +34,7 @@ export class SyncProgressModal extends Modal {
 	}
 
 	onOpen(): void {
-		this.setTitle("Filen Cloud Sync");
+		this.setTitle("Filen Vault Sync");
 		const body = this.contentEl.createDiv({ cls: "filen-cloud-sync-progress" });
 		this.phaseEl = body.createDiv({ cls: "filen-cloud-sync-progress-phase" });
 		this.phaseEl.setText("Starting…");

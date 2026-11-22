@@ -41,7 +41,7 @@ export class SyncLogModal extends Modal {
 	}
 
 	onOpen(): void {
-		this.setTitle("Filen Cloud Sync log");
+		this.setTitle("Filen Vault Sync log");
 		this.contentEl.addClass("filen-cloud-sync-log-modal");
 		this.render();
 	}

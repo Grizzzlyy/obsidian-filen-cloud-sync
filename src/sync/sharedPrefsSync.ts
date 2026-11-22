@@ -82,7 +82,7 @@ export class SharedPrefsSync {
 	async enable(): Promise<boolean> {
 		const credentials = this.deps.getCredentials();
 		if (!credentials) {
-			this.deps.notify("Filen Cloud Sync: connect your Filen account before sharing settings");
+			this.deps.notify("Filen Vault Sync: connect your Filen account before sharing settings");
 			return false;
 		}
 		this.deps.client.setCredentials(credentials);
@@ -92,7 +92,7 @@ export class SharedPrefsSync {
 		} catch (e) {
 			const message = `could not look for shared settings: ${e instanceof Error ? e.message : String(e)}`;
 			this.deps.log.warn(message);
-			this.deps.notify(`Filen Cloud Sync: ${message} — sharing stays off`);
+			this.deps.notify(`Filen Vault Sync: ${message} — sharing stays off`);
 			return false;
 		}
 		const entry = remote.files.get(PREFS_FILE_NAME);
@@ -233,7 +233,7 @@ export class SharedPrefsSync {
 				+ (changed.length > 0 ? `: ${changed.join(", ")}` : " — no local changes"),
 			);
 			if (changed.length > 0) {
-				this.deps.notify(`Filen Cloud Sync: shared settings applied (written by ${file.device})`);
+				this.deps.notify(`Filen Vault Sync: shared settings applied (written by ${file.device})`);
 			}
 		} finally {
 			this.applying = false;

@@ -1,4 +1,4 @@
-# Filen Cloud Sync — full feature guide
+# Filen Vault Sync — full feature guide
 
 The detailed reference. The [README](../README.md) covers the overview;
 this document covers every option, caveat and edge case.
@@ -38,9 +38,9 @@ this document covers every option, caveat and edge case.
 
 ## Ignored folders
 
-Add folders under **Settings → Filen Cloud Sync → Ignored folders**
+Add folders under **Settings → Filen Vault Sync → Ignored folders**
 (type-ahead folder suggestions) or right-click a folder in the file explorer
-→ **Ignore in Filen Cloud Sync**. Ignored folders are completely excluded
+→ **Ignore in Filen Vault Sync**. Ignored folders are completely excluded
 from syncing in **both** directions: local changes inside them are not
 uploaded, remote changes are not downloaded, and deletions never propagate
 in or out. Their sync base records are preserved, so removing a folder from
@@ -48,7 +48,7 @@ the ignore list later resumes syncing it cleanly (no conflict duplicates).
 
 ## Sync directions
 
-**Settings → Filen Cloud Sync → Sync direction** picks how the vault and
+**Settings → Filen Vault Sync → Sync direction** picks how the vault and
 the cloud reconcile (per device — it is never part of shared settings):
 
 - **Two-way (sync both ways)** — the default. Changes reconcile in both
@@ -106,7 +106,7 @@ non-empty cloud still aborts instead of wiping the remote.
 
 ## Pause syncing
 
-**Settings → Filen Cloud Sync → Pause syncing**, or the **Pause** button
+**Settings → Filen Vault Sync → Pause syncing**, or the **Pause** button
 on the dashboard, stops ALL syncing until you resume: the automatic
 interval, sync-on-save, the startup sync and every manual command/button
 are blocked. Manual triggers show a notice; automatic triggers skip
@@ -129,7 +129,7 @@ replaced content stays on Filen as a version, too).
 
 ## Memory-only credentials
 
-**Settings → Filen Cloud Sync → Memory-only credentials**: keys are kept
+**Settings → Filen Vault Sync → Memory-only credentials**: keys are kept
 only in memory and never written to disk. Each Obsidian start begins
 **locked** (lock ribbon icon); run **Unlock sync** and enter your password
 (+2FA) to unlock for the session — the password field is focused
@@ -161,7 +161,7 @@ transfer pool, so the counter counts completions, not chunk indices.
 
 ## Selective .obsidian config sync
 
-**Settings → Filen Cloud Sync → Sync Obsidian config folder** (off by
+**Settings → Filen Vault Sync → Sync Obsidian config folder** (off by
 default) syncs an allowlist of files inside `.obsidian`. Friendly **preset
 toggles** cover the common items — appearance & theme selection, theme files
 (`themes`), hotkeys, CSS snippets, community/core plugin lists, and plugin
@@ -185,7 +185,7 @@ folders sync recursively). Everything not listed stays excluded. Caveats:
 
 ## Shared settings
 
-**Settings → Filen Cloud Sync → Share settings across devices** (off by
+**Settings → Filen Vault Sync → Share settings across devices** (off by
 default) syncs a **curated subset** of settings between your devices via an
 encrypted `.filen-cloud-sync-preferences.json` file stored directly in the
 remote sync folder. The synced keys are exactly:
@@ -241,7 +241,7 @@ a warning instead of aborting, so you can review the full plan first.
 
 ## Setup transfer
 
-**Settings → Filen Cloud Sync → Setup transfer** copies your configuration
+**Settings → Filen Vault Sync → Setup transfer** copies your configuration
 to another device with a setup link (`filen-cloud-sync://setup/…`):
 
 - **Export setup** shows a read-only link regenerated from your current
@@ -287,7 +287,7 @@ default 50 MB size limit (Settings → Skip large files) is the mitigation.
 
 ## Fast remote polling
 
-**Settings → Filen Cloud Sync → Fast remote polling** (on by default) probes
+**Settings → Filen Vault Sync → Fast remote polling** (on by default) probes
 Filen's events feed after each local scan. When the feed reports **no
 changes** since the last watermark, the full remote directory scan is
 skipped and the cached remote tree (at most **30 minutes** old) is reused
@@ -303,7 +303,7 @@ instead. Safety rails:
 
 ## Conflict merge view (ask mode)
 
-**Settings → Filen Cloud Sync → Conflict resolution → Ask** pauses the sync
+**Settings → Filen Vault Sync → Conflict resolution → Ask** pauses the sync
 on each text conflict (UTF-8-decodable, ≤ 1 MiB) and opens a side-by-side
 **Local vs Remote** view with line-diff highlighting. Buttons: **Keep
 local** (upload; the remote version goes to Filen trash), **Keep remote**
@@ -346,7 +346,7 @@ uploaded file.
 
 ## Background-change notice
 
-**Settings → Filen Cloud Sync → Notify when a background sync changes
+**Settings → Filen Vault Sync → Notify when a background sync changes
 files** (off by default): after an automatic run (interval, sync-on-save,
 startup) that actually transferred something, a single one-line notice
 summarizes it — e.g. "2 files updated from the cloud", "1 file uploaded".
@@ -431,14 +431,14 @@ presentation-only.
 
 ## About block
 
-The bottom of the settings tab shows a subtle "Filen Cloud Sync
+The bottom of the settings tab shows a subtle "Filen Vault Sync
 *<version>* · by *<author>* · GitHub · Report an issue" line. The version and
 author come from the plugin manifest at runtime (never hardcoded), and the
 links go to the maintainer profile, repository, and issue tracker.
 
 ## Troubleshooting
 
-Enable **Settings → Filen Cloud Sync → Debug log**, then open the developer
+Enable **Settings → Filen Vault Sync → Debug log**, then open the developer
 console and reproduce the problem:
 
 - **Desktop:** `Ctrl+Shift+I` (Windows/Linux) or `Cmd+Opt+I` (macOS) →

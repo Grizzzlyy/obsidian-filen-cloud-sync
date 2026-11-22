@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.5] — 2026-11-22
+
+### Changed
+- **Display name** — Filen Vault Sync. The archived community listing still owns the name Filen Cloud Sync. The plugin id stays `filen-vault-sync`.
+
 ## [0.8.4] — 2026-11-22
 
 ### Changed

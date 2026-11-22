@@ -119,16 +119,16 @@ export class VersionHistoryModal extends Modal {
 		const metadata = version.metadata;
 		if (!metadata) return;
 		if (this.isSyncRunning()) {
-			new Notice("Filen Cloud Sync is running — restore after it finishes");
+			new Notice("Filen Vault Sync is running — restore after it finishes");
 			return;
 		}
 		// Stale-file guard: the file may have changed since this modal opened.
 		const fresh = this.app.vault.getFileByPath(this.file.path);
 		if (!fresh || fresh.stat.mtime !== this.file.stat.mtime) {
-			new Notice(`Filen Cloud Sync: ${this.file.path} changed since the version list loaded — re-open version history`);
+			new Notice(`Filen Vault Sync: ${this.file.path} changed since the version list loaded — re-open version history`);
 			return;
 		}
-		const notice = new Notice("Filen Cloud Sync: restoring version…", 0);
+		const notice = new Notice("Filen Vault Sync: restoring version…", 0);
 		try {
 			const { data, verified } = await this.client.downloadFile(
 				{
@@ -163,7 +163,7 @@ export class VersionHistoryModal extends Modal {
 			notice.hide();
 			const message = `version restore failed for ${this.file.path}: ${errMsg(e)}`;
 			this.log.error(message);
-			new Notice(`Filen Cloud Sync: ${message}`);
+			new Notice(`Filen Vault Sync: ${message}`);
 		}
 	}
 
